@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/wcharczuk/go-chart/v2"
@@ -30,17 +31,19 @@ func main() {
 		return
 	}
 
-	reg := regexp.MustCompile("https?://[^/]*")
+	reg := regexp.MustCompile("https?://[^/]+")
 	websiteMap := make(map[string]int)
 	for rows.Next() {
 		var url string
 		rows.Scan(&url)
 		webName := reg.FindString(url)
-		count, ok := websiteMap[webName]
-		if ok {
-			websiteMap[webName] = count + 1
-		} else {
-			websiteMap[webName] = 1
+		if webName != "" {
+			count, ok := websiteMap[webName]
+			if ok {
+				websiteMap[webName] = count + 1
+			} else {
+				websiteMap[webName] = 1
+			}
 		}
 	}
 
@@ -69,7 +72,7 @@ func main() {
 	PieData := []chart.Value{}
 	for i := 0; i < 15; i++ {
 		PieData = append(PieData, chart.Value{
-			Label: websiteList[i].Name,
+			Label: strings.Split(websiteList[i].Name, "//")[1],
 			Value: float64(websiteList[i].Count),
 		})
 	}
