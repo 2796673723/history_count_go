@@ -35,12 +35,12 @@ func main() {
 	for rows.Next() {
 		var url string
 		rows.Scan(&url)
-		website := reg.FindString(url)
-		count, ok := websiteMap[website]
+		webName := reg.FindString(url)
+		count, ok := websiteMap[webName]
 		if ok {
-			websiteMap[website] = count + 1
+			websiteMap[webName] = count + 1
 		} else {
-			websiteMap[website] = 1
+			websiteMap[webName] = 1
 		}
 	}
 
