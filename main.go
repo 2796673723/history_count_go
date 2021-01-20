@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"sort"
-	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/wcharczuk/go-chart/v2"
@@ -30,11 +30,12 @@ func main() {
 		return
 	}
 
+	reg := regexp.MustCompile("https?://[^/]*")
 	websiteMap := make(map[string]int)
 	for rows.Next() {
 		var url string
 		rows.Scan(&url)
-		website := strings.Split(url, "/")[2]
+		website := reg.FindString(url)
 		count, ok := websiteMap[website]
 		if ok {
 			websiteMap[website] = count + 1
